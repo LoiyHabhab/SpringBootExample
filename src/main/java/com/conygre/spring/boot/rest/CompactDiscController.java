@@ -1,8 +1,9 @@
 package com.conygre.spring.boot.rest;
 
-import com.conygre.spring.boot.entities.CompactDisc;
 import com.conygre.spring.boot.services.CompactDiscService;
-import com.conygre.spring.boot.services.CompactDiscServiceImpl;
+import com.conygre.spring.boot.entities.CompactDisc;
+import io.swagger.annotations.ApiOperation;
+//import org.apache.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +11,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/compactdiscs")
+@CrossOrigin // allows requests from all domains
 public class CompactDiscController {
-
-    @Autowired
-    private CompactDiscServiceImpl service;
 
     private static Logger logger = LogManager.getLogger(CompactDiscController.class);
 
+    @Autowired
+    private CompactDiscService service;
+
+    @ApiOperation(value = "findAll", nickname = "findAll")
     @RequestMapping(method = RequestMethod.GET)
-    Iterable<CompactDisc> findAll() {
+    public Iterable<CompactDisc> findAll() {
         logger.info("managed to call a Get request for findAll");
         return service.getCatalog();
     }
@@ -42,6 +45,7 @@ public class CompactDiscController {
             return new ResponseEntity<>(disc, HttpStatus.OK);
         }
     }
+
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public void deleteCd(@PathVariable("id") int id) {
